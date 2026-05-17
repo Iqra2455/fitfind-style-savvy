@@ -17,6 +17,7 @@ import { Route as AssistantRouteImport } from './routes/assistant'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DebugChatRouteImport } from './routes/debug.chat'
+import { Route as AssistantThreadIdRouteImport } from './routes/assistant.$threadId'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 
 const WishlistRoute = WishlistRouteImport.update({
@@ -59,6 +60,11 @@ const DebugChatRoute = DebugChatRouteImport.update({
   path: '/debug/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AssistantThreadIdRoute = AssistantThreadIdRouteImport.update({
+  id: '/$threadId',
+  path: '/$threadId',
+  getParentRoute: () => AssistantRoute,
+} as any)
 const ApiChatRoute = ApiChatRouteImport.update({
   id: '/api/chat',
   path: '/api/chat',
@@ -68,35 +74,38 @@ const ApiChatRoute = ApiChatRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/assistant': typeof AssistantRoute
+  '/assistant': typeof AssistantRouteWithChildren
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/recommendations': typeof RecommendationsRoute
   '/wishlist': typeof WishlistRoute
   '/api/chat': typeof ApiChatRoute
+  '/assistant/$threadId': typeof AssistantThreadIdRoute
   '/debug/chat': typeof DebugChatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/assistant': typeof AssistantRoute
+  '/assistant': typeof AssistantRouteWithChildren
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/recommendations': typeof RecommendationsRoute
   '/wishlist': typeof WishlistRoute
   '/api/chat': typeof ApiChatRoute
+  '/assistant/$threadId': typeof AssistantThreadIdRoute
   '/debug/chat': typeof DebugChatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/assistant': typeof AssistantRoute
+  '/assistant': typeof AssistantRouteWithChildren
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/recommendations': typeof RecommendationsRoute
   '/wishlist': typeof WishlistRoute
   '/api/chat': typeof ApiChatRoute
+  '/assistant/$threadId': typeof AssistantThreadIdRoute
   '/debug/chat': typeof DebugChatRoute
 }
 export interface FileRouteTypes {
@@ -110,6 +119,7 @@ export interface FileRouteTypes {
     | '/recommendations'
     | '/wishlist'
     | '/api/chat'
+    | '/assistant/$threadId'
     | '/debug/chat'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -121,6 +131,7 @@ export interface FileRouteTypes {
     | '/recommendations'
     | '/wishlist'
     | '/api/chat'
+    | '/assistant/$threadId'
     | '/debug/chat'
   id:
     | '__root__'
@@ -132,13 +143,14 @@ export interface FileRouteTypes {
     | '/recommendations'
     | '/wishlist'
     | '/api/chat'
+    | '/assistant/$threadId'
     | '/debug/chat'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
-  AssistantRoute: typeof AssistantRoute
+  AssistantRoute: typeof AssistantRouteWithChildren
   DashboardRoute: typeof DashboardRoute
   LoginRoute: typeof LoginRoute
   RecommendationsRoute: typeof RecommendationsRoute
@@ -205,6 +217,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DebugChatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/assistant/$threadId': {
+      id: '/assistant/$threadId'
+      path: '/$threadId'
+      fullPath: '/assistant/$threadId'
+      preLoaderRoute: typeof AssistantThreadIdRouteImport
+      parentRoute: typeof AssistantRoute
+    }
     '/api/chat': {
       id: '/api/chat'
       path: '/api/chat'
@@ -215,10 +234,22 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AssistantRouteChildren {
+  AssistantThreadIdRoute: typeof AssistantThreadIdRoute
+}
+
+const AssistantRouteChildren: AssistantRouteChildren = {
+  AssistantThreadIdRoute: AssistantThreadIdRoute,
+}
+
+const AssistantRouteWithChildren = AssistantRoute._addFileChildren(
+  AssistantRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
-  AssistantRoute: AssistantRoute,
+  AssistantRoute: AssistantRouteWithChildren,
   DashboardRoute: DashboardRoute,
   LoginRoute: LoginRoute,
   RecommendationsRoute: RecommendationsRoute,
