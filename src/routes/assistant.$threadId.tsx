@@ -104,9 +104,8 @@ function ChatInner({
 
   const isBusy = status === "submitted" || status === "streaming";
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const text = input.trim();
+  const handleSubmit = async (message: { text?: string }) => {
+    const text = (message.text ?? input).trim();
     if (!text || isBusy) return;
     setInput("");
     await sendMessage({ text });
