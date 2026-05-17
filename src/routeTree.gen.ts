@@ -16,6 +16,8 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AssistantRouteImport } from './routes/assistant'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiChatRouteImport } from './routes/api/chat'
+import { Route as AssistantRouteImport } from './routes/assistant.'
 
 const WishlistRoute = WishlistRouteImport.update({
   id: '/wishlist',
@@ -52,34 +54,49 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiChatRoute = ApiChatRouteImport.update({
+  id: '/api/chat',
+  path: '/api/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AssistantRoute = AssistantRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AssistantRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/assistant': typeof AssistantRoute
+  '/assistant': typeof AssistantRouteWithChildren
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/recommendations': typeof RecommendationsRoute
   '/wishlist': typeof WishlistRoute
+  '/assistant/': typeof AssistantRoute
+  '/api/chat': typeof ApiChatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/assistant': typeof AssistantRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/recommendations': typeof RecommendationsRoute
   '/wishlist': typeof WishlistRoute
+  '/assistant': typeof AssistantRoute
+  '/api/chat': typeof ApiChatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/assistant': typeof AssistantRoute
+  '/assistant': typeof AssistantRouteWithChildren
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/recommendations': typeof RecommendationsRoute
   '/wishlist': typeof WishlistRoute
+  '/assistant/': typeof AssistantRoute
+  '/api/chat': typeof ApiChatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -91,15 +108,18 @@ export interface FileRouteTypes {
     | '/login'
     | '/recommendations'
     | '/wishlist'
+    | '/assistant/'
+    | '/api/chat'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
-    | '/assistant'
     | '/dashboard'
     | '/login'
     | '/recommendations'
     | '/wishlist'
+    | '/assistant'
+    | '/api/chat'
   id:
     | '__root__'
     | '/'
@@ -109,16 +129,19 @@ export interface FileRouteTypes {
     | '/login'
     | '/recommendations'
     | '/wishlist'
+    | '/assistant/'
+    | '/api/chat'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
-  AssistantRoute: typeof AssistantRoute
+  AssistantRoute: typeof AssistantRouteWithChildren
   DashboardRoute: typeof DashboardRoute
   LoginRoute: typeof LoginRoute
   RecommendationsRoute: typeof RecommendationsRoute
   WishlistRoute: typeof WishlistRoute
+  ApiChatRoute: typeof ApiChatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -172,17 +195,44 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/chat': {
+      id: '/api/chat'
+      path: '/api/chat'
+      fullPath: '/api/chat'
+      preLoaderRoute: typeof ApiChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/assistant/': {
+      id: '/assistant/'
+      path: '/'
+      fullPath: '/assistant/'
+      preLoaderRoute: typeof AssistantRouteImport
+      parentRoute: typeof AssistantRoute
+    }
   }
 }
+
+interface AssistantRouteChildren {
+  AssistantRoute: typeof AssistantRoute
+}
+
+const AssistantRouteChildren: AssistantRouteChildren = {
+  AssistantRoute: AssistantRoute,
+}
+
+const AssistantRouteWithChildren = AssistantRoute._addFileChildren(
+  AssistantRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
-  AssistantRoute: AssistantRoute,
+  AssistantRoute: AssistantRouteWithChildren,
   DashboardRoute: DashboardRoute,
   LoginRoute: LoginRoute,
   RecommendationsRoute: RecommendationsRoute,
   WishlistRoute: WishlistRoute,
+  ApiChatRoute: ApiChatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
