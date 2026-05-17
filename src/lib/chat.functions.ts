@@ -60,7 +60,7 @@ export const streamChat = createServerFn({ method: "POST" })
           thread_id: threadId,
           user_id: userId,
           role: mm.role,
-          parts: mm.parts as unknown,
+          parts: mm.parts as never,
         }));
         if (rows.length) await supabase.from("chat_messages").insert(rows);
         await supabase.from("chat_threads")

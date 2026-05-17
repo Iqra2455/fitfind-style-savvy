@@ -49,8 +49,9 @@ function Login() {
     setLoading(true);
     try {
       const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
-      if (result.error) throw new Error(typeof result.error === "string" ? result.error : (result.error as Error).message);
-      if (!result.redirected) nav({ to: "/dashboard" });
+      const r = result as { redirected?: boolean; error?: unknown };
+      if (r.error) throw new Error(r.error instanceof Error ? r.error.message : String(r.error));
+      if (!r.redirected) nav({ to: "/dashboard" });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Google sign-in failed");
     } finally { setLoading(false); }
