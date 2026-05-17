@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { Header } from "@/components/layout/header";
@@ -9,6 +9,15 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Search, X } from "lucide-react";
 
 export const Route = createFileRoute("/debug/chat")({
   head: () => ({ meta: [{ title: "Chat Debug — FitFind" }, { name: "robots", content: "noindex" }] }),
@@ -23,6 +32,9 @@ function ChatDebugPage() {
   const list = useServerFn(listThreads);
   const get = useServerFn(getThread);
   const [selected, setSelected] = useState<string | null>(null);
+  const [threadFilter, setThreadFilter] = useState("");
+  const [roleFilter, setRoleFilter] = useState<"all" | "user" | "assistant" | "system">("all");
+  const [textFilter, setTextFilter] = useState("");
 
   const { data: threads } = useQuery({
     queryKey: ["debug-threads"],
