@@ -3,6 +3,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { createLovableAiGatewayProvider } from "@/lib/ai-gateway";
 import { convertToModelMessages, streamText, type UIMessage } from "ai";
 import { z } from "zod";
+import type { Json } from "@/integrations/supabase/types";
 
 const sysPrompt = `You are the FitFind AI Fit Assistant — a friendly, knowledgeable stylist for online shoppers in Pakistan and globally.
 You help users:
@@ -60,7 +61,7 @@ export const streamChat = createServerFn({ method: "POST" })
           thread_id: threadId,
           user_id: userId,
           role: mm.role,
-          parts: mm.parts as never,
+          parts: JSON.parse(JSON.stringify(mm.parts)) as Json,
         }));
         if (rows.length) await supabase.from("chat_messages").insert(rows);
         await supabase.from("chat_threads")
