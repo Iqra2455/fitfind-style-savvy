@@ -1,3 +1,12 @@
+const WELCOME_TEXT = `👋 Hi! I'm your **FitFind AI Fit Assistant**.
+
+I can help you:
+- Pick the right size between **S / M / L / XL** or numeric measurements
+- Decide between **Amazon vs Daraz** options
+- Suggest cuts that flatter your body type and preferred fit
+
+Tell me what you're shopping for — for example, *"I want a slim-fit shirt, I'm 175 cm / 70 kg"* — and I'll take it from there.`;
+
 import { createFileRoute, useParams } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useChat } from "@ai-sdk/react";
@@ -9,7 +18,6 @@ import { supabase } from "@/integrations/supabase/client";
 import {
   Conversation,
   ConversationContent,
-  ConversationEmptyState,
   ConversationScrollButton,
 } from "@/components/ai-elements/conversation";
 import {
@@ -24,7 +32,6 @@ import {
   PromptInputSubmit,
 } from "@/components/ai-elements/prompt-input";
 import { Shimmer } from "@/components/ai-elements/shimmer";
-import { Sparkles } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/assistant/$threadId")({
@@ -115,14 +122,12 @@ function ChatInner({
     <div className="flex h-full min-h-[70vh] flex-col">
       <Conversation className="flex-1">
         <ConversationContent>
-          {messages.length === 0 ? (
-            <ConversationEmptyState
-              icon={<Sparkles className="h-8 w-8 text-primary" />}
-              title="Ask your AI Fit Assistant"
-              description="Get tailored advice on sizing, fit, and what to buy from Amazon and Daraz."
-            />
-          ) : (
-            messages.map((m) => {
+          {messages.length === 0 && (
+            <Message from="assistant">
+              <MessageResponse>{WELCOME_TEXT}</MessageResponse>
+            </Message>
+          )}
+          {messages.map((m) => {
               const text = m.parts
                 .map((p) => (p.type === "text" ? p.text : ""))
                 .join("");
@@ -135,8 +140,7 @@ function ChatInner({
                   )}
                 </Message>
               );
-            })
-          )}
+            })}
           {status === "submitted" && (
             <Message from="assistant">
               <Shimmer>Thinking…</Shimmer>
