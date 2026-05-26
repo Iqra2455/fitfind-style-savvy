@@ -15,6 +15,8 @@ Converts height, weight, and body type into accurate size predictions
 Supports international + Asian size charts
 Shows fit confidence score
 Suggests slim / regular / oversized fit guidance
+
+
 🛍️ Product Recommendation Engine
 AI-powered product suggestions from Amazon & Daraz
 Displays:
@@ -32,16 +34,19 @@ Color
 Category
 Gender
 💬 AI Fit Assistant (Chat System)
+
 Explains why a size was recommended
 Tells if item will fit tight, loose, or perfect
 Suggests alternative sizes if uncertain
 Acts like a personal fashion stylist
 👤 User Accounts System
+
 Sign up / Login
 Save body measurements
 Wishlist & favorites
 Recently viewed products
 📊 Dashboard
+
 Personalized recommendations
 Saved preferences
 Wishlist management
